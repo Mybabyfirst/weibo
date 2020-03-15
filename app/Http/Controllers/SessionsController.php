@@ -28,4 +28,10 @@ class SessionsController extends Controller
             //withInput() 是使模板里的 {{old()}}能获取到上一次的值
         }
     }
+    public function destroy()
+    {
+        Auth::logout();
+        session()->falsh('success','退出成功');
+        return redirect('login');
+    }
 }
