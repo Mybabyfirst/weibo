@@ -27,12 +27,20 @@ class SessionsController extends Controller
             'password' => 'required'
         ]);
         if (Auth::attempt($credentials,$request->has('remember'))) {
-            // 登录成功后的相关操作
-            session()->flash('success',"欢迎回来");
-            $fallback = route('users.show', Auth::user());
-            return redirect()->intended($fallback);
-            //Auth::user() 获取当前用户
-            //intended(),该方法将重新定向到上一次访问的页面,并接收一个默认跳转地址的参数,如果上一次记录为空着跳转到默认地址上
+            if(Auth::user()->activated){
+                // 登录成功后的相关操作
+                session()->flash('success',"欢迎回来");
+                $fallback = route('users.show', Auth::user());
+                return redirect()->intended($fallback);
+                //Auth::user() 获取当前用户
+                //intended(),该方法将重新定向到上一次访问的页面,并接
+                //收一个默认跳转地址的参数,如果上一次记录为空着跳转到默认地址上
+            }else{
+               Auth::logout();
+               session()->flash('warning',"你的账号未激活，请检查邮箱中的注册邮件进行激活。");
+               return redirect('/');
+            }
+
         } else {
             // 登录失败后的相关操作
             session()->flash('danger',"邮箱或者密码错误");
