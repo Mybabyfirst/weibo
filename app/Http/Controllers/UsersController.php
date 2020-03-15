@@ -12,7 +12,12 @@ class UsersController extends Controller
             'except' => ['show','create','store']
         ]);
     }
-
+    //显示所有的用户列表
+    public function index()
+    {
+        $users = User::paginate(10);
+        return view('users.index', compact('users'));
+    }
     public function create()
     {
         return view('users.create');
