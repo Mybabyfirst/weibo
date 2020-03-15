@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Auth;
 class UsersController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth',[
-            'except' => ['show','create','store']
+            'except' => ['show','create','store','index']
         ]);
     }
     //显示所有的用户列表
@@ -64,5 +65,12 @@ class UsersController extends Controller
         $user->update($data);
         session()->flash('success','更新成功');
         return redirect()->route('users.show', $user);
+    }
+    public function destroy(User $user)
+    {
+        $this->authorize('destroy', $user);
+        $user->delete();
+        session()->flash('success','删除成功');
+        return back();
     }
 }
