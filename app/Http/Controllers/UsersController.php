@@ -97,4 +97,12 @@ class UsersController extends Controller
         session()->flash('success', '恭喜你，激活成功！');
         return redirect()->route('users.show', [$user]);
     }
+    //显示一个用户所有的微博
+    public function show(User $user)
+    {
+        $statuses = $user->statuses()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        return view('users.show', compact('user', 'statuses'));
+    }
 }
