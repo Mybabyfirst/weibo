@@ -6,6 +6,16 @@ use Illuminate\Http\Request;
 use Auth;
 class SessionsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('guest',[
+            'only' => ['create']
+        ]);
+        $this->middleware('guest', [
+            'only' => ['create']
+        ]);
+    }
+
     public function create()
     {
         return view('sessions.create');
@@ -19,8 +29,10 @@ class SessionsController extends Controller
         if (Auth::attempt($credentials,$request->has('remember'))) {
             // 登录成功后的相关操作
             session()->flash('success',"欢迎回来");
-            return redirect()->route('users.show',[Auth::user()]);
-            //Auth::user() 获取当前i用户
+            $fallback = route('users.show', Auth::user());
+            return redirect()->intended($fallback);
+            //Auth::user() 获取当前用户
+            //intended(),该方法将重新定向到上一次访问的页面,并接收一个默认跳转地址的参数,如果上一次记录为空着跳转到默认地址上
         } else {
             // 登录失败后的相关操作
             session()->flash('danger',"邮箱或者密码错误");
@@ -31,7 +43,7 @@ class SessionsController extends Controller
     public function destroy()
     {
         Auth::logout();
-        session()->falsh('success','退出成功');
+        session()->flash('success','退出成功');
         return redirect('login');
     }
 }
