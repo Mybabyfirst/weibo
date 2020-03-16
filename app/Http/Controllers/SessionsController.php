@@ -8,9 +8,7 @@ class SessionsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('guest',[
-            'only' => ['create']
-        ]);
+        //guest 指定未登录用户 只能访问create方法
         $this->middleware('guest', [
             'only' => ['create']
         ]);
